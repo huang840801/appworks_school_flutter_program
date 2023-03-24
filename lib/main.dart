@@ -1,7 +1,10 @@
-import 'dart:ui';
+import 'dart:core';
 
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+import 'detail_screen.dart';
 
 void main() => runApp(DevicePreview(builder: (context) => const MyApp()));
 
@@ -32,7 +35,6 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       useInheritedMediaQuery: true,
-      title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
@@ -117,7 +119,10 @@ class _MyAppState extends State<MyApp> {
         width: 300,
         child: Builder(builder: (context) {
           return GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Route route = DetailScreen.getRoute(product);
+              Navigator.push(context, route);
+            },
             child: OutlinedButton(
                 onPressed: null,
                 style: ButtonStyle(
