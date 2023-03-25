@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:core';
 
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'api/product_list_response.dart';
 import 'detail_screen.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(DevicePreview(builder: (context) => const MyApp()));
 
@@ -18,6 +21,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+
+    test();
+
     List<Product> products = [
       Product(image: null, name: null, price: null, title: '女裝'),
       Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
@@ -110,6 +116,20 @@ class _MyAppState extends State<MyApp> {
             },
           )),
     );
+  }
+
+  Future<void> test() async {
+
+    var uri = Uri.parse('https://api.appworks-school.tw/api/1.0/products/women');
+    var response = await http.get(uri);
+    print('Huang Response status: ${response.statusCode}');
+    print('Huang Response body: ${response.body}');
+
+    Map<String, dynamic> map = jsonDecode(response.body);
+    var productList = ProductListResponse.fromMap(map);
+
+    print('Huang title, ${productList.data.first.title}');
+    print('Huang texture, ${productList.data.first.texture}');
   }
 
   Widget getProduct(Product product) {
