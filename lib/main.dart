@@ -3,7 +3,9 @@ import 'dart:core';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MyApp());
+import 'package:device_preview/device_preview.dart';
+
+void main() => runApp(DevicePreview(builder: (context) => const MyApp()));
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
