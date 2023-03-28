@@ -115,7 +115,7 @@ class _MyAppState extends State<MyApp> {
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           padding: const EdgeInsets.only(top: 10, bottom: 10),
-                          itemCount: 5,
+                          itemCount: 10,
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
                                 padding: const EdgeInsets.only(left: 7, right: 7),
@@ -198,6 +198,7 @@ class _ProductGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double titleLayoutHeight = 40;
     return LayoutBuilder(builder: (context, constraint) {
       return Container(
         color: Colors.white,
@@ -208,7 +209,7 @@ class _ProductGridView extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: 3,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisExtent: 40,
+                  mainAxisExtent: titleLayoutHeight,
                   crossAxisCount: 3,
                 ),
                 itemBuilder: (BuildContext context, int index) {
@@ -229,7 +230,7 @@ class _ProductGridView extends StatelessWidget {
                     });
               },
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisExtent: constraint.maxHeight,
+                mainAxisExtent: constraint.maxHeight - titleLayoutHeight,
                 crossAxisCount: 3,
               ),
             ),
