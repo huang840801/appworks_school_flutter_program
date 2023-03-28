@@ -1,12 +1,13 @@
 import 'dart:core';
 
-import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'detail_screen.dart';
 
-void main() => runApp(DevicePreview(builder: (context) => const MyApp()));
+void main() => runApp(const MyApp());
+// void main() => runApp(DevicePreview(builder: (context) => const MyApp()));
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -31,6 +32,55 @@ class _MyAppState extends State<MyApp> {
       Product(image: accessoriesImage(), name: '配件', price: 10, title: null),
       Product(image: accessoriesImage(), name: '配件', price: 10, title: null),
       Product(image: accessoriesImage(), name: '配件', price: 10, title: null),
+    ];
+
+    List<List<Product>> gridProducts = [
+      [
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
+      ],
+      [
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
+        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null)
+      ],
+      [
+        Product(image: accessoriesImage(), name: '配件', price: 10, title: null),
+        Product(image: accessoriesImage(), name: '配件', price: 10, title: null),
+        Product(image: accessoriesImage(), name: '配件', price: 10, title: null)
+      ]
     ];
 
     return MaterialApp(
@@ -70,40 +120,31 @@ class _MyAppState extends State<MyApp> {
                           itemCount: 5,
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
-                              padding: const EdgeInsets.only(left: 7, right: 7),
-                              child: SizedBox(
-                                height: 100,
-                                width: 300,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: const Image(
-                                    fit: BoxFit.fill,
-                                    image: AssetImage("images/rivers.png"),
+                                padding: const EdgeInsets.only(left: 7, right: 7),
+                                child: SizedBox(
+                                  height: 100,
+                                  width: 300,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: const Image(
+                                      fit: BoxFit.fill,
+                                      image: AssetImage("images/rivers.png"),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            );
+                                ));
                           }),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     height: constraint.maxHeight - 180,
-                    color: Colors.white,
                     child: ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context).copyWith(
-                        dragDevices: {
-                          PointerDeviceKind.touch,
-                          PointerDeviceKind.mouse,
-                        },
-                      ),
-                      child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
-                          itemCount: products.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(padding: const EdgeInsets.only(top: 4, bottom: 4), child: getProduct(products[index]));
-                          }),
-                    ),
+                        behavior: ScrollConfiguration.of(context).copyWith(
+                          dragDevices: {
+                            PointerDeviceKind.touch,
+                            PointerDeviceKind.mouse,
+                          },
+                        ),
+                        child: kIsWeb ? _ProductGridView(gridProducts) : _ProductListView(products)),
                   ),
                 ],
               );
@@ -112,13 +153,123 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Widget getProduct(Product product) {
-    if (product.title == null) {
-      return SizedBox(
-        height: 100,
-        width: 300,
-        child: Builder(builder: (context) {
-          return GestureDetector(
+  Image manImage() {
+    return const Image(width: 80, fit: BoxFit.fill, image: AssetImage("images/coat_man.png"));
+  }
+
+  Image womanImage() {
+    return const Image(width: 80, fit: BoxFit.fill, image: AssetImage("images/coat_woman.png"));
+  }
+
+  Image accessoriesImage() {
+    return const Image(width: 80, fit: BoxFit.fill, image: AssetImage("images/accessories.png"));
+  }
+}
+
+class _ProductListView extends StatelessWidget {
+  final List<Product> products;
+
+  const _ProductListView(
+      this.products, {
+        Key? key,
+      }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        scrollDirection: Axis.vertical,
+        padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
+        itemCount: products.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+              padding: const EdgeInsets.only(top: 4, bottom: 4),
+              child: products[index].title == null
+                  ? ProductItem(product: products[index])
+                  : Center(child: Text(products[index].title!, style: const TextStyle(color: Colors.black, fontSize: 15))));
+        });
+  }
+}
+
+class _ProductGridView extends StatelessWidget {
+  final List<List<Product>> products;
+
+  const _ProductGridView(
+      this.products, {
+        Key? key,
+      }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraint) {
+      return Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            Flexible(
+              child: GridView.builder(
+                shrinkWrap: true,
+                itemCount: 3,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  mainAxisExtent: 40,
+                  crossAxisCount: 3,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(color: Colors.white, child: Center(child: Text(getTitle(index), style: const TextStyle(color: Colors.black, fontSize: 15))));
+                },
+              ),
+            ),
+            GridView.builder(
+              shrinkWrap: true,
+              itemCount: 3,
+              itemBuilder: (BuildContext context, int parentIndex) {
+                return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
+                    itemCount: products[parentIndex].length,
+                    itemBuilder: (BuildContext context, int childIndex) {
+                      return Padding(padding: const EdgeInsets.only(top: 4, bottom: 4), child: ProductItem(product: products[parentIndex][childIndex]));
+                    });
+              },
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisExtent: constraint.maxHeight,
+                crossAxisCount: 3,
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  String getTitle(int index) {
+    switch (index) {
+      case 0:
+        return '女裝';
+      case 1:
+        return '男裝';
+      case 2:
+        return '配件';
+      default:
+        return '';
+    }
+  }
+}
+
+class ProductItem extends StatelessWidget {
+  const ProductItem({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
+
+  final Product product;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 100,
+      width: 300,
+      child: Builder(builder: (context) {
+        return GestureDetector(
             onTap: () {
               Route route = DetailScreen.getRoute(product);
               Navigator.push(context, route);
@@ -156,27 +307,13 @@ class _MyAppState extends State<MyApp> {
                       ],
                     ),
                   ],
-                )),
-          );
-        }),
-      );
-    } else {
-      return Center(child: Text(product.title!, style: const TextStyle(color: Colors.black, fontSize: 15)));
-    }
-  }
-
-  Image manImage() {
-    return const Image(width: 80, fit: BoxFit.fill, image: AssetImage("images/coat_man.png"));
-  }
-
-  Image womanImage() {
-    return const Image(width: 80, fit: BoxFit.fill, image: AssetImage("images/coat_woman.png"));
-  }
-
-  Image accessoriesImage() {
-    return const Image(width: 80, fit: BoxFit.fill, image: AssetImage("images/accessories.png"));
+                )));
+      }),
+    );
   }
 }
+
+
 
 class Product {
   late String? name;
