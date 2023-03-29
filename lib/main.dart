@@ -1,6 +1,5 @@
 import 'dart:core';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -117,7 +116,7 @@ class _MyAppState extends State<MyApp> {
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           padding: const EdgeInsets.only(top: 10, bottom: 10),
-                          itemCount: 5,
+                          itemCount: 10,
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
                                 padding: const EdgeInsets.only(left: 7, right: 7),
@@ -136,16 +135,15 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                   SizedBox(
-                    height: constraint.maxHeight - 180,
-                    child: ScrollConfiguration(
-                        behavior: ScrollConfiguration.of(context).copyWith(
-                          dragDevices: {
-                            PointerDeviceKind.touch,
-                            PointerDeviceKind.mouse,
-                          },
-                        ),
-                        child: kIsWeb ? _ProductGridView(gridProducts) : _ProductListView(products)),
-                  ),
+                      height: constraint.maxHeight - 180,
+                      child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context).copyWith(
+                            dragDevices: {
+                              PointerDeviceKind.touch,
+                              PointerDeviceKind.mouse,
+                            },
+                          ),
+                          child: (MediaQuery.of(context).size.width > 800) ? _ProductGridView(gridProducts) : _ProductListView(products))),
                 ],
               );
             },
@@ -200,6 +198,7 @@ class _ProductGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double titleLayoutHeight = 40;
     return LayoutBuilder(builder: (context, constraint) {
       return Container(
         color: Colors.white,
@@ -210,7 +209,7 @@ class _ProductGridView extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: 3,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisExtent: 40,
+                  mainAxisExtent: titleLayoutHeight,
                   crossAxisCount: 3,
                 ),
                 itemBuilder: (BuildContext context, int index) {
@@ -231,7 +230,7 @@ class _ProductGridView extends StatelessWidget {
                     });
               },
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisExtent: constraint.maxHeight,
+                mainAxisExtent: constraint.maxHeight - titleLayoutHeight,
                 crossAxisCount: 3,
               ),
             ),
@@ -267,7 +266,6 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
-      width: 300,
       child: Builder(builder: (context) {
         return GestureDetector(
             onTap: () {
