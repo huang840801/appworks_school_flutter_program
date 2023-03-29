@@ -1,6 +1,5 @@
 import 'dart:core';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -134,16 +133,15 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                   SizedBox(
-                    height: constraint.maxHeight - 180,
-                    child: ScrollConfiguration(
-                        behavior: ScrollConfiguration.of(context).copyWith(
-                          dragDevices: {
-                            PointerDeviceKind.touch,
-                            PointerDeviceKind.mouse,
-                          },
-                        ),
-                        child: kIsWeb ? _ProductGridView(gridProducts) : _ProductListView(products)),
-                  ),
+                      height: constraint.maxHeight - 180,
+                      child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context).copyWith(
+                            dragDevices: {
+                              PointerDeviceKind.touch,
+                              PointerDeviceKind.mouse,
+                            },
+                          ),
+                          child: (MediaQuery.of(context).size.width > 800) ? _ProductGridView(gridProducts) : _ProductListView(products))),
                 ],
               );
             },
@@ -266,7 +264,6 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
-      width: 300,
       child: Builder(builder: (context) {
         return GestureDetector(
             onTap: () {},
