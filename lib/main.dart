@@ -3,6 +3,8 @@ import 'dart:core';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'detail_screen.dart';
+
 void main() => runApp(const MyApp());
 // void main() => runApp(DevicePreview(builder: (context) => const MyApp()));
 
@@ -166,9 +168,9 @@ class _ProductListView extends StatelessWidget {
   final List<Product> products;
 
   const _ProductListView(
-    this.products, {
-    Key? key,
-  }) : super(key: key);
+      this.products, {
+        Key? key,
+      }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -190,9 +192,9 @@ class _ProductGridView extends StatelessWidget {
   final List<List<Product>> products;
 
   const _ProductGridView(
-    this.products, {
-    Key? key,
-  }) : super(key: key);
+      this.products, {
+        Key? key,
+      }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +268,10 @@ class ProductItem extends StatelessWidget {
       height: 100,
       child: Builder(builder: (context) {
         return GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Route route = DetailScreen.getRoute(product);
+              Navigator.push(context, route);
+            },
             child: OutlinedButton(
                 onPressed: null,
                 style: ButtonStyle(
