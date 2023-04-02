@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:core';
 
 import 'package:appworks_school_flutter_program/main_view_model.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'api/product_list_response.dart';
 import 'detail_screen.dart';
-import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 // void main() => runApp(DevicePreview(builder: (context) => const MyApp()));
@@ -97,8 +95,7 @@ class _MyAppState extends State<MyApp> {
                                 },
                               ),
                               child: (MediaQuery.of(context).size.width > 800)
-                                  ? SizedBox()
-                                  // ? _ProductGridView(gridProducts)
+                                  ? _ProductGridView(productList)
                                   : ProductListView(productList)
                           )
                       ),
@@ -125,7 +122,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class ProductListView extends StatelessWidget {
-  List<Product> productList;
+  List<Product> productList = [];
 
   ProductListView(this.productList, {super.key,});
 
@@ -152,12 +149,25 @@ class ProductListView extends StatelessWidget {
 }
 
 class _ProductGridView extends StatelessWidget {
-  final List<List<Product>> products;
+  List<List<Product>> productList = [];
 
-  const _ProductGridView(
-      this.products, {
-        Key? key,
-      }) : super(key: key);
+  _ProductGridView(List<Product> productList, {Key? key,}) : super(key: key) {
+    this.productList.clear();
+
+    Product womenTitleProduct = productList.firstWhere((product) => product.categoryTitle == '女裝');
+    Product menTitleProduct = productList.firstWhere((product) => product.categoryTitle == '男裝');
+    Product accessoriesTitleProduct = productList.firstWhere((product) => product.categoryTitle == '配件');
+    int womenTitleProductIndex = productList.indexOf(womenTitleProduct);
+    int menTitleProductIndex = productList.indexOf(menTitleProduct);
+    int accessoriesTitleProductIndex = productList.indexOf(accessoriesTitleProduct);
+    List<Product> womenList = productList.sublist(womenTitleProductIndex + 1, menTitleProductIndex);
+    List<Product> menList = productList.sublist(menTitleProductIndex + 1, accessoriesTitleProductIndex);
+    List<Product> accessoriesList = productList.sublist(accessoriesTitleProductIndex + 1, productList.length);
+
+    this.productList.add(womenList);
+    this.productList.add(menList);
+    this.productList.add(accessoriesList);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -187,9 +197,9 @@ class _ProductGridView extends StatelessWidget {
                 return ListView.builder(
                     scrollDirection: Axis.vertical,
                     padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
-                    itemCount: products[parentIndex].length,
+                    itemCount: productList[parentIndex].length,
                     itemBuilder: (BuildContext context, int childIndex) {
-                      return Padding(padding: const EdgeInsets.only(top: 4, bottom: 4), child: ProductItem(product: products[parentIndex][childIndex]));
+                      return Padding(padding: const EdgeInsets.only(top: 4, bottom: 4), child: ProductItem(product: productList[parentIndex][childIndex]));
                     });
               },
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
