@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'api/product_list_response.dart';
 import 'main.dart';
 
 class DetailScreen extends StatelessWidget {
@@ -43,9 +44,9 @@ class DetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 25),
-                        SizedBox(width: 250, height: 300, child: product.image),
+                        SizedBox(width: 250, height: 300, child: Image.network(product.mainImage)),
                         const SizedBox(height: 10),
-                        Text(product.name!, style: const TextStyle(color: Colors.black, fontSize: 20)),
+                        Text(product.title!, style: const TextStyle(color: Colors.black, fontSize: 20)),
                         const Text('2023030101', style: TextStyle(color: Colors.black, fontSize: 16)),
                         const SizedBox(height: 20),
                         Text('NT ${product.price}', style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),

@@ -1,10 +1,10 @@
 class ProductListResponse {
-  late List<DataBean> data;
-  late int nextPaging;
+  late List<Product> data;
+  late int? nextPaging;
 
   static ProductListResponse fromMap(Map<String, dynamic> map) {
     ProductListResponse productListResponseBean = ProductListResponse();
-    productListResponseBean.data = [...(map['data'] as List).map((o) => DataBean.fromMap(o))];
+    productListResponseBean.data = [...(map['data'] as List).map((o) => Product.fromMap(o))];
     productListResponseBean.nextPaging = map['next_paging'];
     return productListResponseBean;
   }
@@ -15,10 +15,10 @@ class ProductListResponse {
       };
 }
 
-class DataBean {
+class Product {
   late int id;
   late String category;
-  late String title;
+  late String? title;
   late String description;
   late int price;
   late String texture;
@@ -31,9 +31,12 @@ class DataBean {
   late List<VariantsBean> variants;
   late List<ColorsBean> colors;
   late List<String> sizes;
+  String categoryTitle = '';
 
-  static DataBean fromMap(Map<String, dynamic> map) {
-    DataBean dataBean = DataBean();
+  Product(this.categoryTitle);
+
+  static Product fromMap(Map<String, dynamic> map) {
+    Product dataBean = Product('');
     dataBean.id = map['id'];
     dataBean.category = map['category'];
     dataBean.title = map['title'];

@@ -1,153 +1,113 @@
+import 'dart:convert';
 import 'dart:core';
 
+import 'package:appworks_school_flutter_program/main_view_model.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'api/product_list_response.dart';
 import 'detail_screen.dart';
+import 'package:http/http.dart' as http;
 
-void main() => runApp(const MyApp());
+void main() => runApp(MyApp());
 // void main() => runApp(DevicePreview(builder: (context) => const MyApp()));
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  final viewModel = MainViewModel();
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    super.initState();
+    widget.viewModel.getAllProductList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Product> products = [
-      Product(image: null, name: null, price: null, title: '女裝'),
-      Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-      Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-      Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-      Product(image: null, name: null, price: null, title: '男裝'),
-      Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-      Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-      Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-      Product(image: null, name: null, price: null, title: '配件'),
-      Product(image: accessoriesImage(), name: '配件', price: 10, title: null),
-      Product(image: accessoriesImage(), name: '配件', price: 10, title: null),
-      Product(image: accessoriesImage(), name: '配件', price: 10, title: null),
-    ];
-
-    List<List<Product>> gridProducts = [
-      [
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-        Product(image: womanImage(), name: '特級極輕女裝羽絨外套', price: 123, title: null),
-      ],
-      [
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null),
-        Product(image: manImage(), name: '特級極輕男裝羽絨外套', price: 456, title: null)
-      ],
-      [
-        Product(image: accessoriesImage(), name: '配件', price: 10, title: null),
-        Product(image: accessoriesImage(), name: '配件', price: 10, title: null),
-        Product(image: accessoriesImage(), name: '配件', price: 10, title: null)
-      ]
-    ];
 
     return MaterialApp(
-      useInheritedMediaQuery: true,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color.fromARGB(255, 240, 243, 247),
-            centerTitle: true,
-            title: const Image(
-              image: AssetImage("images/stylish_logo.png"),
-              height: 25,
-              width: 120,
-            ),
-            elevation: 2,
-          ),
-          body: LayoutBuilder(
-            builder: (context, constraint) {
-              return Column(
-                children: [
-                  Container(
-                    color: Colors.white,
-                    height: 180,
-                    child: ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context).copyWith(
-                        dragDevices: {
-                          PointerDeviceKind.touch,
-                          PointerDeviceKind.mouse,
-                        },
-                      ),
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.only(top: 10, bottom: 10),
-                          itemCount: 10,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                                padding: const EdgeInsets.only(left: 7, right: 7),
-                                child: SizedBox(
-                                  height: 100,
-                                  width: 300,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: const Image(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage("images/rivers.png"),
-                                    ),
-                                  ),
-                                ));
-                          }),
-                    ),
-                  ),
-                  SizedBox(
-                      height: constraint.maxHeight - 180,
-                      child: ScrollConfiguration(
+      home:
+      ValueListenableBuilder(
+        valueListenable: widget.viewModel.allProductList,
+        builder: (context, productList,  child) {
+          return Scaffold(
+              appBar: AppBar(
+                backgroundColor: const Color.fromARGB(255, 240, 243, 247),
+                centerTitle: true,
+                title: const Image(
+                  image: AssetImage("images/stylish_logo.png"),
+                  height: 25,
+                  width: 120,
+                ),
+                elevation: 2,
+              ),
+              body: LayoutBuilder(
+                builder: (context, constraint) {
+                  return Column(
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        height: 180,
+                        child: ScrollConfiguration(
                           behavior: ScrollConfiguration.of(context).copyWith(
                             dragDevices: {
                               PointerDeviceKind.touch,
                               PointerDeviceKind.mouse,
                             },
                           ),
-                          child: (MediaQuery.of(context).size.width > 800) ? _ProductGridView(gridProducts) : _ProductListView(products))),
-                ],
-              );
-            },
-          )),
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.only(top: 10, bottom: 10),
+                              itemCount: 10,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                    padding: const EdgeInsets.only(left: 7, right: 7),
+                                    child: SizedBox(
+                                      height: 100,
+                                      width: 300,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: const Image(
+                                          fit: BoxFit.fill,
+                                          image: AssetImage("images/rivers.png"),
+                                        ),
+                                      ),
+                                    ));
+                              }),
+                        ),
+                      ),
+                      SizedBox(
+                          height: constraint.maxHeight - 200,
+                          child: ScrollConfiguration(
+                              behavior: ScrollConfiguration.of(context).copyWith(
+                                dragDevices: {
+                                  PointerDeviceKind.touch,
+                                  PointerDeviceKind.mouse,
+                                },
+                              ),
+                              child: (MediaQuery.of(context).size.width > 800)
+                                  ? SizedBox()
+                                  // ? _ProductGridView(gridProducts)
+                                  : ProductListView(productList)
+                          )
+                      ),
+                    ],
+                  );
+                },
+              ));
+        },
+      ),
     );
   }
 
@@ -164,27 +124,30 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class _ProductListView extends StatelessWidget {
-  final List<Product> products;
+class ProductListView extends StatelessWidget {
+  List<Product> productList;
 
-  const _ProductListView(
-      this.products, {
-        Key? key,
-      }) : super(key: key);
+  ProductListView(this.productList, {super.key,});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        scrollDirection: Axis.vertical,
-        padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
-        itemCount: products.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 4),
-              child: products[index].title == null
-                  ? ProductItem(product: products[index])
-                  : Center(child: Text(products[index].title!, style: const TextStyle(color: Colors.black, fontSize: 15))));
-        });
+    scrollDirection: Axis.vertical,
+    padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
+    itemCount: productList.length,
+    itemBuilder: (BuildContext context, int index) {
+      return Padding(
+          padding: const EdgeInsets.only(top: 4, bottom: 4),
+          child: productList[index].categoryTitle.isEmpty
+              ? ProductItem(product: productList[index])
+                : Center(
+                    child: Text(
+                      productList[index].categoryTitle,
+                      style: const TextStyle(color: Colors.black, fontSize: 15),
+                    ),
+                  ),
+          );
+    });
   }
 }
 
@@ -286,7 +249,7 @@ class ProductItem extends StatelessWidget {
                           topLeft: Radius.circular(12),
                           bottomLeft: Radius.circular(12),
                         ),
-                        child: product.image),
+                        child: Image.network(product.mainImage)),
                     const SizedBox(
                       width: 10,
                     ),
@@ -295,7 +258,7 @@ class ProductItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product.name!,
+                          product.title == null ? '' : product.title!,
                           style: const TextStyle(fontSize: 14, color: Colors.black),
                         ),
                         Text(
@@ -309,15 +272,4 @@ class ProductItem extends StatelessWidget {
       }),
     );
   }
-}
-
-
-
-class Product {
-  late String? name;
-  late int? price;
-  late Image? image;
-  late String? title;
-
-  Product({required this.name, required this.price, this.image, required this.title});
 }
