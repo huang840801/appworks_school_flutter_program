@@ -57,10 +57,12 @@ class DetailScreen extends StatelessWidget {
                             const Text('顏色', style: TextStyle(color: Colors.black, fontSize: 16)),
                             const SizedBox(width: 10),
                             Container(color: const Color(0x19333333), height: 18, width: 1),
-                            const SizedBox(width: 10),
-                            Container(color: Colors.green, height: 18, width: 18),
-                            const SizedBox(width: 10),
-                            Container(color: Colors.deepPurpleAccent, height: 18, width: 18),
+                            const SizedBox(width: 5),
+                            SingleSelectColor(
+                              colorList: const [Colors.green, Colors.deepOrange],
+                              onSelect: (color) {
+                              },
+                            ),
                           ],
                         ),
                         const SizedBox(height: 15),
@@ -70,13 +72,14 @@ class DetailScreen extends StatelessWidget {
                             const SizedBox(width: 10),
                             Container(color: const Color(0x19333333), height: 18, width: 1),
                             const SizedBox(width: 10),
-                            const SizeButton(size: 'S'),
-                            const SizedBox(width: 8),
-                            const SizeButton(size: 'M'),
-                            const SizedBox(width: 8),
-                            const SizeButton(size: 'L'),
+                            SingleSelectSize(
+                              sizeList: const ['S', 'M', 'L'],
+                              onSelect: (selectedOption) {
+                              },
+                            ),
                           ],
                         ),
+                        const SizedBox(height: 20),
                         const SizedBox(height: 20),
                         Row(
                           children: [
@@ -84,41 +87,7 @@ class DetailScreen extends StatelessWidget {
                             const SizedBox(width: 10),
                             Container(color: const Color(0x19333333), height: 18, width: 1),
                             const SizedBox(width: 25),
-                            SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: RawMaterialButton(
-                                onPressed: () {},
-                                elevation: 2.0,
-                                fillColor: Colors.black,
-                                padding: const EdgeInsets.all(0),
-                                shape: const CircleBorder(),
-                                child: const Icon(
-                                  color: Colors.white,
-                                  Icons.remove,
-                                  size: 15,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 50),
-                            const Text('1', style: TextStyle(color: Colors.black, fontSize: 16)),
-                            const SizedBox(width: 50),
-                            SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: RawMaterialButton(
-                                onPressed: () {},
-                                elevation: 2.0,
-                                fillColor: Colors.black,
-                                padding: const EdgeInsets.all(0),
-                                shape: const CircleBorder(),
-                                child: const Icon(
-                                  color: Colors.white,
-                                  Icons.add,
-                                  size: 15,
-                                ),
-                              ),
-                            ),
+                            const ProductScreen(),
                           ],
                         ),
                         const SizedBox(
@@ -133,9 +102,9 @@ class DetailScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Column(
+                        const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             SizedBox(height: 3),
                             Text('實品顏色依單品照為主', style: TextStyle(color: Colors.black, fontSize: 15)),
                             SizedBox(height: 3),
@@ -173,11 +142,9 @@ class DetailScreen extends StatelessWidget {
                             )
                           ],
                         ),
-                        const Text(
-                            'The Xunyang River sees off guests at night, and the maple leaves and grasses rustle in autumn.The master dismounts, and the guest is in the boat. He wants to drink without an orchestra.',
-                            style: TextStyle(color: Colors.black, fontSize: 12)),
-                        Column(
-                          children: const [
+                        const Text('The Xunyang River sees off guests at night, and the maple leaves and grasses rustle in autumn.The master dismounts, and the guest is in the boat. He wants to drink without an orchestra.', style: TextStyle(color: Colors.black, fontSize: 12)),
+                        const Column(
+                          children: [
                             SizedBox(height: 10),
                             Image(
                               fit: BoxFit.fill,
@@ -207,30 +174,219 @@ class DetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-          )),
+          )
+      ),
     );
   }
 }
 
-class SizeButton extends StatelessWidget {
-  final String size;
+class SingleSelectColor extends StatefulWidget {
+  final List<MaterialColor> colorList;
+  final Function(MaterialColor) onSelect;
 
-  const SizeButton({
-    Key? key,
-    required this.size,
-  }) : super(key: key);
+  const SingleSelectColor({super.key, required this.colorList, required this.onSelect});
+
+  @override
+  SingleSelectColorState createState() => SingleSelectColorState();
+}
+
+class SingleSelectColorState extends State<SingleSelectColor> {
+  int _selectedIndex = -1;
+
+  void _handleOptionSelect(int index) {
+    setState(() {
+      _selectedIndex = index;
+      widget.onSelect(widget.colorList[index]);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        backgroundColor: const Color.fromARGB(255, 87, 99, 108),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: List<Widget>.generate(
+        widget.colorList.length,
+        (int index) {
+          return Row(
+            children: [
+              OutlinedButton(
+                  onPressed: () {
+                    _handleOptionSelect(index);
+                  },
+                  style: ButtonStyle(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    minimumSize: MaterialStateProperty.all(const Size(40, 40)),
+                    padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(0)),
+                    side: MaterialStateProperty.all(BorderSide(color: _selectedIndex == index ? Colors.black : Colors.transparent, width: 1.0, style: BorderStyle.solid)),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))),
+                  ),
+                  child: Container(color: widget.colorList[index], height: 18, width: 18)),
+            ],
+          );
+        },
       ),
-      child: Text(size, style: const TextStyle(color: Colors.white, fontSize: 12)),
+    );
+  }
+}
+
+class SingleSelectSize extends StatefulWidget {
+  final List<String> sizeList;
+  final Function(String) onSelect;
+
+  const SingleSelectSize({super.key, required this.sizeList, required this.onSelect});
+
+  @override
+  SingleSelectSizeState createState() => SingleSelectSizeState();
+}
+
+class SingleSelectSizeState extends State<SingleSelectSize> {
+  int _selectedIndex = -1;
+
+  void _handleOptionSelect(int index) {
+    setState(() {
+      _selectedIndex = index;
+      widget.onSelect(widget.sizeList[index]);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const grey = Color.fromARGB(255, 87, 99, 108);
+    const white = Colors.white;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: List<Widget>.generate(
+        widget.sizeList.length,
+        (int index) {
+          return Row(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  _handleOptionSelect(index);
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  backgroundColor: _selectedIndex == index ? white : grey,
+                ),
+                child: Text(widget.sizeList[index], style: TextStyle(color: _selectedIndex == index ? grey : white, fontSize: 12)),
+              ),
+              const SizedBox(width: 10),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class QuantityWidget extends StatefulWidget {
+  final int initialValue;
+  final Function(int) onChanged;
+
+  const QuantityWidget({super.key, required this.initialValue, required this.onChanged});
+
+  @override
+  QuantityWidgetState createState() => QuantityWidgetState();
+}
+
+class QuantityWidgetState extends State<QuantityWidget> {
+  late int _value;
+
+  @override
+  void initState() {
+    super.initState();
+    _value = widget.initialValue;
+  }
+
+  void _increment() {
+    setState(() {
+      _value++;
+      widget.onChanged(_value);
+    });
+  }
+
+  void _decrement() {
+    setState(() {
+      if (_value > 0) {
+        _value--;
+        widget.onChanged(_value);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 20,
+          height: 20,
+          child: RawMaterialButton(
+            onPressed: _decrement,
+            elevation: 2.0,
+            fillColor: Colors.black,
+            padding: const EdgeInsets.all(0),
+            shape: const CircleBorder(),
+            child: const Icon(
+              color: Colors.white,
+              Icons.remove,
+              size: 15,
+            ),
+          ),
+        ),
+        const SizedBox(width: 50),
+        Text('$_value'),
+        const SizedBox(width: 50),
+        SizedBox(
+          width: 20,
+          height: 20,
+          child: RawMaterialButton(
+            onPressed: () {
+              _increment();
+            },
+            elevation: 2.0,
+            fillColor: Colors.black,
+            padding: const EdgeInsets.all(0),
+            shape: const CircleBorder(),
+            child: const Icon(
+              color: Colors.white,
+              Icons.add,
+              size: 15,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class ProductScreen extends StatefulWidget {
+  const ProductScreen({super.key});
+
+  @override
+  ProductScreenState createState() => ProductScreenState();
+}
+
+class ProductScreenState extends State<ProductScreen> {
+  int _quantity = 1;
+
+  void _handleQuantityChange(int newValue) {
+    setState(() {
+      _quantity = newValue;
+    });
+  }
+
+  void _addToCart() {
+    print('Added $_quantity products to cart');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return QuantityWidget(
+      initialValue: _quantity,
+      onChanged: _handleQuantityChange,
     );
   }
 }
