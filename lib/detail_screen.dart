@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 
 class DetailScreen extends StatelessWidget {
-  const DetailScreen({super.key, required this.product});
+  String size = '';
+  int quantity = 0;
+  MaterialColor? color;
+
+  DetailScreen({super.key, required this.product});
 
   final Product product;
   static String routeName = "/detail_screen";
@@ -61,6 +65,7 @@ class DetailScreen extends StatelessWidget {
                             SingleSelectColor(
                               colorList: const [Colors.green, Colors.deepOrange],
                               onSelect: (color) {
+                                this.color = color;
                               },
                             ),
                           ],
@@ -75,6 +80,7 @@ class DetailScreen extends StatelessWidget {
                             SingleSelectSize(
                               sizeList: const ['S', 'M', 'L'],
                               onSelect: (selectedOption) {
+                                size = selectedOption;
                               },
                             ),
                           ],
@@ -86,18 +92,45 @@ class DetailScreen extends StatelessWidget {
                             const SizedBox(width: 10),
                             Container(color: const Color(0x19333333), height: 18, width: 1),
                             const SizedBox(width: 25),
-                            const ProductScreen(),
+                            QuantityWidget(onChanged: (value) {
+                              quantity = value;
+                            },),
                           ],
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                        Container(
-                          color: const Color.fromARGB(255, 78, 73, 73),
-                          child: const Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 10, bottom: 10),
-                              child: Text('請選擇尺寸', style: TextStyle(color: Colors.white, fontSize: 18)),
+                        GestureDetector(
+                          onTap: () {
+
+                            showDialog(
+                                context: context,
+                                builder: (_) =>
+                                    AlertDialog(
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text('color=$color',style: const TextStyle(color: Colors.black, fontSize: 15)),
+                                              Text('size=$size',style: const TextStyle(color: Colors.black, fontSize: 15)),
+                                              Text('quantity=$quantity',style: const TextStyle(color: Colors.black, fontSize: 15)),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    )
+                            );
+
+                          },
+                          child: Container(
+                            color: const Color.fromARGB(255, 78, 73, 73),
+                            child: const Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 10, bottom: 10),
+                                child: Text('請選擇尺寸', style: TextStyle(color: Colors.white, fontSize: 18)),
+                              ),
                             ),
                           ),
                         ),
@@ -281,23 +314,15 @@ class SingleSelectSizeState extends State<SingleSelectSize> {
 }
 
 class QuantityWidget extends StatefulWidget {
-  final int initialValue;
   final Function(int) onChanged;
-
-  const QuantityWidget({super.key, required this.initialValue, required this.onChanged});
+  const QuantityWidget({super.key, required this.onChanged});
 
   @override
   QuantityWidgetState createState() => QuantityWidgetState();
 }
 
 class QuantityWidgetState extends State<QuantityWidget> {
-  late int _value;
-
-  @override
-  void initState() {
-    super.initState();
-    _value = widget.initialValue;
-  }
+  int _value = 1;
 
   void _increment() {
     setState(() {
@@ -357,35 +382,6 @@ class QuantityWidgetState extends State<QuantityWidget> {
           ),
         )
       ],
-    );
-  }
-}
-
-class ProductScreen extends StatefulWidget {
-  const ProductScreen({super.key});
-
-  @override
-  ProductScreenState createState() => ProductScreenState();
-}
-
-class ProductScreenState extends State<ProductScreen> {
-  int _quantity = 1;
-
-  void _handleQuantityChange(int newValue) {
-    setState(() {
-      _quantity = newValue;
-    });
-  }
-
-  void _addToCart() {
-    print('Added $_quantity products to cart');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return QuantityWidget(
-      initialValue: _quantity,
-      onChanged: _handleQuantityChange,
     );
   }
 }
