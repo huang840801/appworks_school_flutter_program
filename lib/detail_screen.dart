@@ -79,8 +79,7 @@ class DetailScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 40),
                         Row(
                           children: [
                             const Text('數量', style: TextStyle(color: Colors.black, fontSize: 16)),
@@ -102,9 +101,9 @@ class DetailScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const Column(
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                          children: const [
                             SizedBox(height: 3),
                             Text('實品顏色依單品照為主', style: TextStyle(color: Colors.black, fontSize: 15)),
                             SizedBox(height: 3),
@@ -143,8 +142,8 @@ class DetailScreen extends StatelessWidget {
                           ],
                         ),
                         const Text('The Xunyang River sees off guests at night, and the maple leaves and grasses rustle in autumn.The master dismounts, and the guest is in the boat. He wants to drink without an orchestra.', style: TextStyle(color: Colors.black, fontSize: 12)),
-                        const Column(
-                          children: [
+                        Column(
+                          children: const [
                             SizedBox(height: 10),
                             Image(
                               fit: BoxFit.fill,
