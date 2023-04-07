@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'main.dart';
 
-class DetailScreen extends StatelessWidget {
-  String size = '';
-  int quantity = 0;
-  MaterialColor? color;
+class DetailScreen extends StatefulWidget {
 
   DetailScreen({super.key, required this.product});
 
@@ -18,7 +15,19 @@ class DetailScreen extends StatelessWidget {
   }
 
   @override
+  State<DetailScreen> createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  String size = '';
+  int quantity = 0;
+  MaterialColor? color;
+  int selectedColorIndex = -1;
+  int selectedSizeIndex = -1;
+
+  @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -47,12 +56,12 @@ class DetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 25),
-                        SizedBox(width: 250, height: 300, child: product.image),
+                        SizedBox(width: 250, height: 300, child: widget.product.image),
                         const SizedBox(height: 10),
-                        Text(product.name!, style: const TextStyle(color: Colors.black, fontSize: 20)),
+                        Text(widget.product.name!, style: const TextStyle(color: Colors.black, fontSize: 20)),
                         const Text('2023030101', style: TextStyle(color: Colors.black, fontSize: 16)),
                         const SizedBox(height: 20),
-                        Text('NT ${product.price}', style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
+                        Text('NT ${widget.product.price}', style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 10),
                         Container(color: const Color(0x19333333), height: 1, width: 250),
                         const SizedBox(height: 10),
@@ -63,9 +72,13 @@ class DetailScreen extends StatelessWidget {
                             Container(color: const Color(0x19333333), height: 18, width: 1),
                             const SizedBox(width: 5),
                             SingleSelectColor(
+                              selectedColorIndex: selectedColorIndex,
                               colorList: const [Colors.green, Colors.deepOrange],
-                              onSelect: (color) {
-                                this.color = color;
+                              onSelect: (index) {
+                                setState(() {
+                                  selectedSizeIndex = -1;
+                                  selectedColorIndex = index;
+                                });
                               },
                             ),
                           ],
@@ -78,9 +91,12 @@ class DetailScreen extends StatelessWidget {
                             Container(color: const Color(0x19333333), height: 18, width: 1),
                             const SizedBox(width: 10),
                             SingleSelectSize(
+                              selectedSizeIndex: selectedSizeIndex,
                               sizeList: const ['S', 'M', 'L'],
-                              onSelect: (selectedOption) {
-                                size = selectedOption;
+                              onSelect: (index) {
+                                setState(() {
+                                  selectedSizeIndex = index;
+                                });
                               },
                             ),
                           ],
@@ -134,9 +150,9 @@ class DetailScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Column(
+                        const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             SizedBox(height: 3),
                             Text('實品顏色依單品照為主', style: TextStyle(color: Colors.black, fontSize: 15)),
                             SizedBox(height: 3),
@@ -175,8 +191,8 @@ class DetailScreen extends StatelessWidget {
                           ],
                         ),
                         const Text('The Xunyang River sees off guests at night, and the maple leaves and grasses rustle in autumn.The master dismounts, and the guest is in the boat. He wants to drink without an orchestra.', style: TextStyle(color: Colors.black, fontSize: 12)),
-                        Column(
-                          children: const [
+                        const Column(
+                          children: [
                             SizedBox(height: 10),
                             Image(
                               fit: BoxFit.fill,
@@ -214,23 +230,26 @@ class DetailScreen extends StatelessWidget {
 
 class SingleSelectColor extends StatefulWidget {
   final List<MaterialColor> colorList;
-  final Function(MaterialColor) onSelect;
+  final Function(int) onSelect;
+  int selectedColorIndex;
 
-  const SingleSelectColor({super.key, required this.colorList, required this.onSelect});
+  SingleSelectColor({super.key,
+    required this.selectedColorIndex,
+    required this.colorList,
+    required this.onSelect});
 
   @override
   SingleSelectColorState createState() => SingleSelectColorState();
 }
 
 class SingleSelectColorState extends State<SingleSelectColor> {
-  int _selectedIndex = -1;
 
-  void _handleOptionSelect(int index) {
-    setState(() {
-      _selectedIndex = index;
-      widget.onSelect(widget.colorList[index]);
-    });
-  }
+  // void _handleOptionSelect(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //     widget.onSelect(widget.colorList[index]);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -243,13 +262,13 @@ class SingleSelectColorState extends State<SingleSelectColor> {
             children: [
               OutlinedButton(
                   onPressed: () {
-                    _handleOptionSelect(index);
+                    widget.onSelect(index);
                   },
                   style: ButtonStyle(
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     minimumSize: MaterialStateProperty.all(const Size(40, 40)),
                     padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(0)),
-                    side: MaterialStateProperty.all(BorderSide(color: _selectedIndex == index ? Colors.black : Colors.transparent, width: 1.0, style: BorderStyle.solid)),
+                    side: MaterialStateProperty.all(BorderSide(color: widget.selectedColorIndex == index ? Colors.black : Colors.transparent, width: 1.0, style: BorderStyle.solid)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))),
                   ),
                   child: Container(color: widget.colorList[index], height: 18, width: 18)),
@@ -263,23 +282,26 @@ class SingleSelectColorState extends State<SingleSelectColor> {
 
 class SingleSelectSize extends StatefulWidget {
   final List<String> sizeList;
-  final Function(String) onSelect;
+  final Function(int) onSelect;
+  int selectedSizeIndex;
 
-  const SingleSelectSize({super.key, required this.sizeList, required this.onSelect});
+  SingleSelectSize({super.key,
+    required this.selectedSizeIndex,
+    required this.sizeList,
+    required this.onSelect});
 
   @override
   SingleSelectSizeState createState() => SingleSelectSizeState();
 }
 
 class SingleSelectSizeState extends State<SingleSelectSize> {
-  int _selectedIndex = -1;
 
-  void _handleOptionSelect(int index) {
-    setState(() {
-      _selectedIndex = index;
-      widget.onSelect(widget.sizeList[index]);
-    });
-  }
+  // void _handleOptionSelect(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //     widget.onSelect(widget.sizeList[index]);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -294,15 +316,15 @@ class SingleSelectSizeState extends State<SingleSelectSize> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  _handleOptionSelect(index);
+                  widget.onSelect(index);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  backgroundColor: _selectedIndex == index ? white : grey,
+                  backgroundColor: widget.selectedSizeIndex == index ? white : grey,
                 ),
-                child: Text(widget.sizeList[index], style: TextStyle(color: _selectedIndex == index ? grey : white, fontSize: 12)),
+                child: Text(widget.sizeList[index], style: TextStyle(color: widget.selectedSizeIndex == index ? grey : white, fontSize: 12)),
               ),
               const SizedBox(width: 10),
             ],
