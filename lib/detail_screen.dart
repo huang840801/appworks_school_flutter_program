@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 
 class DetailScreen extends StatefulWidget {
-
-  DetailScreen({super.key, required this.product});
+  const DetailScreen({super.key, required this.product});
 
   final Product product;
   static String routeName = "/detail_screen";
@@ -27,7 +26,6 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -108,9 +106,11 @@ class _DetailScreenState extends State<DetailScreen> {
                             const SizedBox(width: 10),
                             Container(color: const Color(0x19333333), height: 18, width: 1),
                             const SizedBox(width: 25),
-                            QuantityWidget(onChanged: (value) {
-                              quantity = value;
-                            },),
+                            QuantityWidget(
+                              onChanged: (value) {
+                                quantity = value;
+                              },
+                            ),
                           ],
                         ),
                         const SizedBox(
@@ -118,27 +118,23 @@ class _DetailScreenState extends State<DetailScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-
                             showDialog(
                                 context: context,
-                                builder: (_) =>
-                                    AlertDialog(
+                                builder: (_) => AlertDialog(
                                       content: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                           Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Text('color=$color',style: const TextStyle(color: Colors.black, fontSize: 15)),
-                                              Text('size=$size',style: const TextStyle(color: Colors.black, fontSize: 15)),
-                                              Text('quantity=$quantity',style: const TextStyle(color: Colors.black, fontSize: 15)),
+                                              Text('color=$color', style: const TextStyle(color: Colors.black, fontSize: 15)),
+                                              Text('size=$size', style: const TextStyle(color: Colors.black, fontSize: 15)),
+                                              Text('quantity=$quantity', style: const TextStyle(color: Colors.black, fontSize: 15)),
                                             ],
                                           )
                                         ],
                                       ),
-                                    )
-                            );
-
+                                    ));
                           },
                           child: Container(
                             color: const Color.fromARGB(255, 78, 73, 73),
@@ -222,56 +218,39 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
               ),
             ),
-          )
-      ),
+          )),
     );
   }
 }
 
-class SingleSelectColor extends StatefulWidget {
+class SingleSelectColor extends StatelessWidget {
   final List<MaterialColor> colorList;
   final Function(int) onSelect;
-  int selectedColorIndex;
+  final int selectedColorIndex;
 
-  SingleSelectColor({super.key,
-    required this.selectedColorIndex,
-    required this.colorList,
-    required this.onSelect});
-
-  @override
-  SingleSelectColorState createState() => SingleSelectColorState();
-}
-
-class SingleSelectColorState extends State<SingleSelectColor> {
-
-  // void _handleOptionSelect(int index) {
-  //   setState(() {
-  //     _selectedIndex = index;
-  //     widget.onSelect(widget.colorList[index]);
-  //   });
-  // }
+  const SingleSelectColor({super.key, required this.selectedColorIndex, required this.colorList, required this.onSelect});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: List<Widget>.generate(
-        widget.colorList.length,
+        colorList.length,
         (int index) {
           return Row(
             children: [
               OutlinedButton(
                   onPressed: () {
-                    widget.onSelect(index);
+                    onSelect(index);
                   },
                   style: ButtonStyle(
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     minimumSize: MaterialStateProperty.all(const Size(40, 40)),
                     padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(0)),
-                    side: MaterialStateProperty.all(BorderSide(color: widget.selectedColorIndex == index ? Colors.black : Colors.transparent, width: 1.0, style: BorderStyle.solid)),
+                    side: MaterialStateProperty.all(BorderSide(color: selectedColorIndex == index ? Colors.black : Colors.transparent, width: 1.0, style: BorderStyle.solid)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))),
                   ),
-                  child: Container(color: widget.colorList[index], height: 18, width: 18)),
+                  child: Container(color: colorList[index], height: 18, width: 18)),
             ],
           );
         },
@@ -280,28 +259,12 @@ class SingleSelectColorState extends State<SingleSelectColor> {
   }
 }
 
-class SingleSelectSize extends StatefulWidget {
+class SingleSelectSize extends StatelessWidget {
   final List<String> sizeList;
   final Function(int) onSelect;
-  int selectedSizeIndex;
+  final int selectedSizeIndex;
 
-  SingleSelectSize({super.key,
-    required this.selectedSizeIndex,
-    required this.sizeList,
-    required this.onSelect});
-
-  @override
-  SingleSelectSizeState createState() => SingleSelectSizeState();
-}
-
-class SingleSelectSizeState extends State<SingleSelectSize> {
-
-  // void _handleOptionSelect(int index) {
-  //   setState(() {
-  //     _selectedIndex = index;
-  //     widget.onSelect(widget.sizeList[index]);
-  //   });
-  // }
+  const SingleSelectSize({super.key, required this.selectedSizeIndex, required this.sizeList, required this.onSelect});
 
   @override
   Widget build(BuildContext context) {
@@ -310,21 +273,21 @@ class SingleSelectSizeState extends State<SingleSelectSize> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: List<Widget>.generate(
-        widget.sizeList.length,
+        sizeList.length,
         (int index) {
           return Row(
             children: [
               ElevatedButton(
                 onPressed: () {
-                  widget.onSelect(index);
+                  onSelect(index);
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.only(top: 3, bottom: 3, left: 10, right: 10),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  backgroundColor: widget.selectedSizeIndex == index ? white : grey,
+                  backgroundColor: selectedSizeIndex == index ? white : grey,
                 ),
-                child: Text(widget.sizeList[index], style: TextStyle(color: widget.selectedSizeIndex == index ? grey : white, fontSize: 12)),
+                child: Text(sizeList[index], style: TextStyle(color: selectedSizeIndex == index ? grey : white, fontSize: 12)),
               ),
               const SizedBox(width: 10),
             ],
@@ -337,6 +300,7 @@ class SingleSelectSizeState extends State<SingleSelectSize> {
 
 class QuantityWidget extends StatefulWidget {
   final Function(int) onChanged;
+
   const QuantityWidget({super.key, required this.onChanged});
 
   @override
