@@ -1,17 +1,20 @@
-import 'package:flutter/cupertino.dart';
+class MainViewModel {
+  final int selectedColorIndex;
+  final int selectedSizeIndex;
 
-class MainViewModel extends ChangeNotifier {
-  int selectedColorIndex = -1;
-  int selectedSizeIndex = -1;
+  MainViewModel({this.selectedColorIndex = 0, this.selectedSizeIndex = 0});
 
-  void onColorSelected(int index) {
-    selectedColorIndex = index;
-    selectedSizeIndex = -1;
-    notifyListeners();
+  MainViewModel selectColor({int? selectedColorIndex, int? selectedSizeIndex}) {
+    return MainViewModel(
+      selectedColorIndex: selectedColorIndex ?? this.selectedColorIndex,
+      selectedSizeIndex: selectedSizeIndex ?? this.selectedSizeIndex
+    );
   }
 
-  void onSizeSelected(int index) {
-    selectedSizeIndex = index;
-    notifyListeners();
+  MainViewModel selectSize({int? selectedColorIndex, int? selectedSizeIndex}) {
+    return MainViewModel(
+      selectedColorIndex: selectedColorIndex ?? this.selectedColorIndex,
+      selectedSizeIndex: selectedSizeIndex ?? this.selectedSizeIndex
+    );
   }
 }
