@@ -10,101 +10,66 @@ import 'detail_screen.dart';
 void main() => runApp(MyApp());
 // void main() => runApp(DevicePreview(builder: (context) => const MyApp()));
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   MyApp({super.key});
-
   final viewModel = MainViewModel();
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-
-  @override
-  void initState() {
-    super.initState();
-    widget.viewModel.getAllProductList();
-  }
 
   @override
   Widget build(BuildContext context) {
 
+    viewModel.getAllProductList();
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
-      home:
-      ValueListenableBuilder(
-        valueListenable: widget.viewModel.allProductList,
-        builder: (context, productList,  child) {
-          return Scaffold(
-              appBar: AppBar(
-                backgroundColor: const Color.fromARGB(255, 240, 243, 247),
-                centerTitle: true,
-                title: const Image(
-                  image: AssetImage("images/stylish_logo.png"),
-                  height: 25,
-                  width: 120,
-                ),
-                elevation: 2,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          useMaterial3: true,
+        ),
+        home:
+        Scaffold(
+            appBar: AppBar(
+              backgroundColor: const Color.fromARGB(255, 240, 243, 247),
+              centerTitle: true,
+              title: const Image(
+                image: AssetImage("images/stylish_logo.png"),
+                height: 25,
+                width: 120,
               ),
-              body: LayoutBuilder(
-                builder: (context, constraint) {
-                  return Column(
-                    children: [
-                      Container(
-                        color: Colors.white,
-                        height: 180,
-                        child: ScrollConfiguration(
-                          behavior: ScrollConfiguration.of(context).copyWith(
-                            dragDevices: {
-                              PointerDeviceKind.touch,
-                              PointerDeviceKind.mouse,
-                            },
-                          ),
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.only(top: 10, bottom: 10),
-                              itemCount: 10,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Padding(
-                                    padding: const EdgeInsets.only(left: 7, right: 7),
-                                    child: SizedBox(
-                                      height: 100,
-                                      width: 300,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: const Image(
-                                          fit: BoxFit.fill,
-                                          image: AssetImage("images/rivers.png"),
-                                        ),
-                                      ),
-                                    ));
-                              }),
+              elevation: 2,
+            ),
+            body: LayoutBuilder(
+              builder: (context, constraint) {
+                return Column(
+                  children: [
+                    Container(
+                      color: Colors.white,
+                      height: 180,
+                      child: ScrollConfiguration(
+                        behavior: ScrollConfiguration.of(context).copyWith(
+                          dragDevices: {
+                            PointerDeviceKind.touch,
+                            PointerDeviceKind.mouse,
+                          },
                         ),
+                        child: BannerImage(viewModel),
                       ),
-                      SizedBox(
-                          height: constraint.maxHeight - 200,
-                          child: ScrollConfiguration(
-                              behavior: ScrollConfiguration.of(context).copyWith(
-                                dragDevices: {
-                                  PointerDeviceKind.touch,
-                                  PointerDeviceKind.mouse,
-                                },
-                              ),
-                              child: (MediaQuery.of(context).size.width > 800)
-                                  ? _ProductGridView(productList)
-                                  : ProductListView(productList)
-                          )
-                      ),
-                    ],
-                  );
-                },
-              ));
-        },
-      ),
+                    ),
+                    SizedBox(
+                        height: constraint.maxHeight - 200,
+                        child: ScrollConfiguration(
+                            behavior: ScrollConfiguration.of(context).copyWith(
+                              dragDevices: {
+                                PointerDeviceKind.touch,
+                                PointerDeviceKind.mouse,
+                              },
+                            ),
+                            child: (MediaQuery.of(context).size.width > 800)
+                                ? _ProductGridView(viewModel)
+                                : ProductListView(viewModel)
+                        )
+                    ),
+                  ],
+                );
+              },
+            ))
     );
   }
 
@@ -121,96 +86,139 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class ProductListView extends StatelessWidget {
-  List<Product> productList = [];
-
-  ProductListView(this.productList, {super.key,});
+class BannerImage extends StatelessWidget {
+  const BannerImage(this. viewModel,{super.key,});
+  final MainViewModel viewModel ;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-    scrollDirection: Axis.vertical,
-    padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
-    itemCount: productList.length,
-    itemBuilder: (BuildContext context, int index) {
-      return Padding(
-          padding: const EdgeInsets.only(top: 4, bottom: 4),
-          child: productList[index].categoryTitle.isEmpty
-              ? ProductItem(product: productList[index])
-                : Center(
-                    child: Text(
-                      productList[index].categoryTitle,
-                      style: const TextStyle(color: Colors.black, fontSize: 15),
-                    ),
-                  ),
-          );
-    });
+    return ValueListenableBuilder(
+        valueListenable: viewModel.imageList,
+        builder: (context, imageList, child) {
+          return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              itemCount: imageList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                    padding: const EdgeInsets.only(left: 7, right: 7),
+                    child: SizedBox(
+                      height: 100,
+                      width: 300,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                          imageList[index],
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ));
+              });
+        });
+  }
+}
+
+class ProductListView extends StatelessWidget {
+  final MainViewModel viewModel ;
+
+  const ProductListView(this.viewModel, {super.key,});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+        valueListenable: viewModel.allProductList,
+        builder: (context, productList, child) {
+          return ListView.builder(
+              scrollDirection: Axis.vertical,
+              padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
+              itemCount: productList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 4, bottom: 4),
+                  child: productList[index].categoryTitle.isEmpty
+                      ? ProductItem(product: productList[index])
+                      : Center(
+                          child: Text(
+                            productList[index].categoryTitle,
+                            style: const TextStyle(color: Colors.black, fontSize: 15),
+                          ),
+                        ),
+                );
+              });
+        });
   }
 }
 
 class _ProductGridView extends StatelessWidget {
-  List<List<Product>> productList = [];
-
-  _ProductGridView(List<Product> productList, {Key? key,}) : super(key: key) {
-    this.productList.clear();
-
-    Product womenTitleProduct = productList.firstWhere((product) => product.categoryTitle == '女裝');
-    Product menTitleProduct = productList.firstWhere((product) => product.categoryTitle == '男裝');
-    Product accessoriesTitleProduct = productList.firstWhere((product) => product.categoryTitle == '配件');
-    int womenTitleProductIndex = productList.indexOf(womenTitleProduct);
-    int menTitleProductIndex = productList.indexOf(menTitleProduct);
-    int accessoriesTitleProductIndex = productList.indexOf(accessoriesTitleProduct);
-    List<Product> womenList = productList.sublist(womenTitleProductIndex + 1, menTitleProductIndex);
-    List<Product> menList = productList.sublist(menTitleProductIndex + 1, accessoriesTitleProductIndex);
-    List<Product> accessoriesList = productList.sublist(accessoriesTitleProductIndex + 1, productList.length);
-
-    this.productList.add(womenList);
-    this.productList.add(menList);
-    this.productList.add(accessoriesList);
-  }
+  const _ProductGridView(this. viewModel, {Key? key,}) : super(key: key);
+  final MainViewModel viewModel ;
 
   @override
   Widget build(BuildContext context) {
+
+    List<List<Product>> newProductList = [];
+
     const double titleLayoutHeight = 40;
-    return LayoutBuilder(builder: (context, constraint) {
-      return Container(
-        color: Colors.white,
-        child: Column(
-          children: [
-            Flexible(
-              child: GridView.builder(
-                shrinkWrap: true,
-                itemCount: 3,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisExtent: titleLayoutHeight,
-                  crossAxisCount: 3,
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(color: Colors.white, child: Center(child: Text(getTitle(index), style: const TextStyle(color: Colors.black, fontSize: 15))));
-                },
-              ),
-            ),
-            GridView.builder(
-              shrinkWrap: true,
-              itemCount: 3,
-              itemBuilder: (BuildContext context, int parentIndex) {
-                return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
-                    itemCount: productList[parentIndex].length,
-                    itemBuilder: (BuildContext context, int childIndex) {
-                      return Padding(padding: const EdgeInsets.only(top: 4, bottom: 4), child: ProductItem(product: productList[parentIndex][childIndex]));
-                    });
-              },
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisExtent: constraint.maxHeight - titleLayoutHeight,
-                crossAxisCount: 3,
-              ),
-            ),
-          ],
-        ),
-      );
-    });
+    return ValueListenableBuilder(
+        valueListenable: viewModel.allProductList,
+        builder: (context, productList, child) {
+          if (productList.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            Product womenTitleProduct = productList.firstWhere((product) => product.categoryTitle == '女裝');
+            Product menTitleProduct = productList.firstWhere((product) => product.categoryTitle == '男裝');
+            Product accessoriesTitleProduct = productList.firstWhere((product) => product.categoryTitle == '配件');
+            int womenTitleProductIndex = productList.indexOf(womenTitleProduct);
+            int menTitleProductIndex = productList.indexOf(menTitleProduct);
+            int accessoriesTitleProductIndex = productList.indexOf(accessoriesTitleProduct);
+            List<Product> womenList = productList.sublist(womenTitleProductIndex + 1, menTitleProductIndex);
+            List<Product> menList = productList.sublist(menTitleProductIndex + 1, accessoriesTitleProductIndex);
+            List<Product> accessoriesList = productList.sublist(accessoriesTitleProductIndex + 1, productList.length);
+            newProductList.add(womenList);
+            newProductList.add(menList);
+            newProductList.add(accessoriesList);
+
+            return LayoutBuilder(builder: (context, constraint) {
+                return Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Flexible(
+                        child: GridView.builder(
+                          shrinkWrap: true,
+                          itemCount: 3,
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            mainAxisExtent: titleLayoutHeight,
+                            crossAxisCount: 3,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(color: Colors.white, child: Center(child: Text(getTitle(index), style: const TextStyle(color: Colors.black, fontSize: 15))));
+                          },
+                        ),
+                      ),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: 3,
+                        itemBuilder: (BuildContext context, int parentIndex) {
+                          return ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
+                              itemCount: newProductList[parentIndex].length,
+                              itemBuilder: (BuildContext context, int childIndex) {
+                                return Padding(padding: const EdgeInsets.only(top: 4, bottom: 4), child: ProductItem(product: newProductList[parentIndex][childIndex]));
+                              });
+                        },
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          mainAxisExtent: constraint.maxHeight - titleLayoutHeight,
+                          crossAxisCount: 3,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              });
+          }
+        });
   }
 
   String getTitle(int index) {
@@ -228,11 +236,7 @@ class _ProductGridView extends StatelessWidget {
 }
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({
-    Key? key,
-    required this.product,
-  }) : super(key: key);
-
+  const ProductItem({Key? key, required this.product,}) : super(key: key);
   final Product product;
 
   @override

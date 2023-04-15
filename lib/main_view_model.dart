@@ -10,6 +10,7 @@ class MainViewModel {
   final ValueNotifier<List<Product>> womenProductList = ValueNotifier([]);
   final ValueNotifier<List<Product>> menProductList = ValueNotifier([]);
   final ValueNotifier<List<Product>> accessoriesProductList = ValueNotifier([]);
+  final ValueNotifier<List<String>> imageList = ValueNotifier([]);
 
   Future<void> getWomenProductList() async {
     final response = apiService.getProductList('women');
@@ -29,31 +30,36 @@ class MainViewModel {
     final response = apiService.getProductList('accessories');
     response.then((value) {
       accessoriesProductList.value = value.data;
-      setAllProducts();
+      _setAllProducts();
     });
   }
 
-  void setAllProducts() {
+  void _setAllProducts() {
     List<Product> productList = [];
+    List<String> tempImageList = [];
     if (womenProductList.value.isNotEmpty) {
       productList.add(Product('女裝'));
       for (final product in womenProductList.value) {
         productList.add(product);
+        tempImageList.add(product.mainImage);
       }
     }
     if (menProductList.value.isNotEmpty) {
       productList.add(Product('男裝'));
       for (final product in menProductList.value) {
         productList.add(product);
+        tempImageList.add(product.mainImage);
       }
     }
     if (accessoriesProductList.value.isNotEmpty) {
       productList.add(Product('配件'));
       for (final product in accessoriesProductList.value) {
         productList.add(product);
+        tempImageList.add(product.mainImage);
       }
     }
     allProductList.value = productList;
+    imageList.value = tempImageList;
   }
 
   Future<void> getAllProductList() async {
