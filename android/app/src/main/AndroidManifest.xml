@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.guanhong.appworks_school_flutter_program">
    <application
-        android:label="appworks_school_flutter_program"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
