@@ -1,35 +1,34 @@
-import 'package:flutter/foundation.dart';
-
 import 'api/api_service.dart';
 import 'api/product_list_response.dart';
 
 class MainViewModel {
+  final _apiService = ApiService();
+  List<Product> allProductList = [];
+  List<String> imageList = [];
+  List<Product> _womenProductList = [];
+  List<Product> _menProductList = [];
+  List<Product> _accessoriesProductList = [];
 
-  final apiService = ApiService();
-  final ValueNotifier<List<Product>> allProductList = ValueNotifier([]);
-  final ValueNotifier<List<Product>> womenProductList = ValueNotifier([]);
-  final ValueNotifier<List<Product>> menProductList = ValueNotifier([]);
-  final ValueNotifier<List<Product>> accessoriesProductList = ValueNotifier([]);
-  final ValueNotifier<List<String>> imageList = ValueNotifier([]);
+  MainViewModel(this.allProductList, this.imageList);
 
   Future<void> getWomenProductList() async {
-    final response = apiService.getProductList('women');
-    response.then((value) {
-      womenProductList.value = value.data;
+    final response = _apiService.getProductList('women');
+    await response.then((value) {
+      _womenProductList = value.data;
     });
   }
 
   Future<void> getMenProductList() async {
-    final response = apiService.getProductList('men');
-    response.then((value) {
-      menProductList.value = value.data;
-
+    final response = _apiService.getProductList('men');
+    await response.then((value) {
+      _menProductList = value.data;
     });
   }
+
   Future<void> getAccessoriesProductList() async {
-    final response = apiService.getProductList('accessories');
-    response.then((value) {
-      accessoriesProductList.value = value.data;
+    final response = _apiService.getProductList('accessories');
+    await response.then((value) {
+      _accessoriesProductList = value.data;
       _setAllProducts();
     });
   }
@@ -37,34 +36,36 @@ class MainViewModel {
   void _setAllProducts() {
     List<Product> productList = [];
     List<String> tempImageList = [];
-    if (womenProductList.value.isNotEmpty) {
+    if (_womenProductList.isNotEmpty) {
       productList.add(Product('女裝'));
-      for (final product in womenProductList.value) {
+      for (final product in _womenProductList) {
         productList.add(product);
         tempImageList.add(product.mainImage);
       }
     }
-    if (menProductList.value.isNotEmpty) {
+    if (_menProductList.isNotEmpty) {
       productList.add(Product('男裝'));
-      for (final product in menProductList.value) {
+      for (final product in _menProductList) {
         productList.add(product);
         tempImageList.add(product.mainImage);
       }
     }
-    if (accessoriesProductList.value.isNotEmpty) {
+    if (_accessoriesProductList.isNotEmpty) {
       productList.add(Product('配件'));
-      for (final product in accessoriesProductList.value) {
+      for (final product in _accessoriesProductList) {
         productList.add(product);
         tempImageList.add(product.mainImage);
       }
     }
-    allProductList.value = productList;
-    imageList.value = tempImageList;
+    allProductList = productList;
+    imageList = tempImageList;
   }
 
-  Future<void> getAllProductList() async {
+  Future<MainViewModel> getAllProductList() async {
     await getWomenProductList();
     await getMenProductList();
     await getAccessoriesProductList();
+
+    return MainViewModel(allProductList, imageList);
   }
 }

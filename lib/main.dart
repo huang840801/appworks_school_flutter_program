@@ -3,28 +3,45 @@ import 'dart:core';
 import 'package:appworks_school_flutter_program/main_view_model.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'api/product_list_response.dart';
 import 'detail_screen.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 // void main() => runApp(DevicePreview(builder: (context) => const MyApp()));
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-  final viewModel = MainViewModel();
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(create: (_) => MainBloc(), child: const HomePage());
+  }
+}
 
-    viewModel.getAllProductList();
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<MainBloc>().add(GetProductListEvent());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
         ),
-        home:
-        Scaffold(
+        home: Scaffold(
             appBar: AppBar(
               backgroundColor: const Color.fromARGB(255, 240, 243, 247),
               centerTitle: true,
@@ -49,7 +66,7 @@ class MyApp extends StatelessWidget {
                             PointerDeviceKind.mouse,
                           },
                         ),
-                        child: BannerImage(viewModel),
+                        child: const BannerImage(),
                       ),
                     ),
                     SizedBox(
@@ -61,16 +78,11 @@ class MyApp extends StatelessWidget {
                                 PointerDeviceKind.mouse,
                               },
                             ),
-                            child: (MediaQuery.of(context).size.width > 800)
-                                ? _ProductGridView(viewModel)
-                                : ProductListView(viewModel)
-                        )
-                    ),
+                            child: (MediaQuery.of(context).size.width > 800) ? const _ProductGridView() : const ProductListView())),
                   ],
                 );
               },
-            ))
-    );
+            )));
   }
 
   Image manImage() {
@@ -87,138 +99,138 @@ class MyApp extends StatelessWidget {
 }
 
 class BannerImage extends StatelessWidget {
-  const BannerImage(this. viewModel,{super.key,});
-  final MainViewModel viewModel ;
+  const BannerImage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-        valueListenable: viewModel.imageList,
-        builder: (context, imageList, child) {
-          return ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              itemCount: imageList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                    padding: const EdgeInsets.only(left: 7, right: 7),
-                    child: SizedBox(
-                      height: 100,
-                      width: 300,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.network(
-                          imageList[index],
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ));
-              });
-        });
+    return BlocBuilder<MainBloc, MainViewModel>(builder: (context, viewModel) {
+      final imageList = viewModel.imageList;
+      return ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          itemCount: imageList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+                padding: const EdgeInsets.only(left: 7, right: 7),
+                child: SizedBox(
+                  height: 100,
+                  width: 300,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(
+                      imageList[index],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ));
+          });
+    });
   }
 }
 
 class ProductListView extends StatelessWidget {
-  final MainViewModel viewModel ;
-
-  const ProductListView(this.viewModel, {super.key,});
+  const ProductListView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-        valueListenable: viewModel.allProductList,
-        builder: (context, productList, child) {
-          return ListView.builder(
-              scrollDirection: Axis.vertical,
-              padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
-              itemCount: productList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 4, bottom: 4),
-                  child: productList[index].categoryTitle.isEmpty
-                      ? ProductItem(product: productList[index])
-                      : Center(
-                          child: Text(
-                            productList[index].categoryTitle,
-                            style: const TextStyle(color: Colors.black, fontSize: 15),
-                          ),
+    return BlocBuilder<MainBloc, MainViewModel>(builder: (context, viewModel) {
+      final productList = viewModel.allProductList;
+      if (productList.isEmpty) {
+        return const Center(child: CircularProgressIndicator());
+      } else {
+        return ListView.builder(
+            scrollDirection: Axis.vertical,
+            padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
+            itemCount: productList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 4, bottom: 4),
+                child: productList[index].categoryTitle.isEmpty
+                    ? ProductItem(product: productList[index])
+                    : Center(
+                        child: Text(
+                          productList[index].categoryTitle,
+                          style: const TextStyle(color: Colors.black, fontSize: 15),
                         ),
-                );
-              });
-        });
+                      ),
+              );
+            });
+      }
+    });
   }
 }
 
 class _ProductGridView extends StatelessWidget {
-  const _ProductGridView(this. viewModel, {Key? key,}) : super(key: key);
-  final MainViewModel viewModel ;
+  const _ProductGridView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     List<List<Product>> newProductList = [];
-
     const double titleLayoutHeight = 40;
-    return ValueListenableBuilder(
-        valueListenable: viewModel.allProductList,
-        builder: (context, productList, child) {
-          if (productList.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            Product womenTitleProduct = productList.firstWhere((product) => product.categoryTitle == '女裝');
-            Product menTitleProduct = productList.firstWhere((product) => product.categoryTitle == '男裝');
-            Product accessoriesTitleProduct = productList.firstWhere((product) => product.categoryTitle == '配件');
-            int womenTitleProductIndex = productList.indexOf(womenTitleProduct);
-            int menTitleProductIndex = productList.indexOf(menTitleProduct);
-            int accessoriesTitleProductIndex = productList.indexOf(accessoriesTitleProduct);
-            List<Product> womenList = productList.sublist(womenTitleProductIndex + 1, menTitleProductIndex);
-            List<Product> menList = productList.sublist(menTitleProductIndex + 1, accessoriesTitleProductIndex);
-            List<Product> accessoriesList = productList.sublist(accessoriesTitleProductIndex + 1, productList.length);
-            newProductList.add(womenList);
-            newProductList.add(menList);
-            newProductList.add(accessoriesList);
 
-            return LayoutBuilder(builder: (context, constraint) {
-                return Container(
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      Flexible(
-                        child: GridView.builder(
-                          shrinkWrap: true,
-                          itemCount: 3,
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            mainAxisExtent: titleLayoutHeight,
-                            crossAxisCount: 3,
-                          ),
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(color: Colors.white, child: Center(child: Text(getTitle(index), style: const TextStyle(color: Colors.black, fontSize: 15))));
-                          },
-                        ),
-                      ),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        itemCount: 3,
-                        itemBuilder: (BuildContext context, int parentIndex) {
-                          return ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
-                              itemCount: newProductList[parentIndex].length,
-                              itemBuilder: (BuildContext context, int childIndex) {
-                                return Padding(padding: const EdgeInsets.only(top: 4, bottom: 4), child: ProductItem(product: newProductList[parentIndex][childIndex]));
-                              });
-                        },
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          mainAxisExtent: constraint.maxHeight - titleLayoutHeight,
-                          crossAxisCount: 3,
-                        ),
-                      ),
-                    ],
+    return BlocBuilder<MainBloc, MainViewModel>(builder: (context, viewModel) {
+      final productList = viewModel.allProductList;
+      if (productList.isEmpty) {
+        return const Center(child: CircularProgressIndicator());
+      } else {
+        Product womenTitleProduct = productList.firstWhere((product) => product.categoryTitle == '女裝');
+        Product menTitleProduct = productList.firstWhere((product) => product.categoryTitle == '男裝');
+        Product accessoriesTitleProduct = productList.firstWhere((product) => product.categoryTitle == '配件');
+        int womenTitleProductIndex = productList.indexOf(womenTitleProduct);
+        int menTitleProductIndex = productList.indexOf(menTitleProduct);
+        int accessoriesTitleProductIndex = productList.indexOf(accessoriesTitleProduct);
+        List<Product> womenList = productList.sublist(womenTitleProductIndex + 1, menTitleProductIndex);
+        List<Product> menList = productList.sublist(menTitleProductIndex + 1, accessoriesTitleProductIndex);
+        List<Product> accessoriesList = productList.sublist(accessoriesTitleProductIndex + 1, productList.length);
+        newProductList.add(womenList);
+        newProductList.add(menList);
+        newProductList.add(accessoriesList);
+
+        return LayoutBuilder(builder: (context, constraint) {
+          return Container(
+            color: Colors.white,
+            child: Column(
+              children: [
+                Flexible(
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: 3,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      mainAxisExtent: titleLayoutHeight,
+                      crossAxisCount: 3,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(color: Colors.white, child: Center(child: Text(getTitle(index), style: const TextStyle(color: Colors.black, fontSize: 15))));
+                    },
                   ),
-                );
-              });
-          }
+                ),
+                GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: 3,
+                  itemBuilder: (BuildContext context, int parentIndex) {
+                    return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        padding: const EdgeInsets.only(top: 7, bottom: 7, left: 10, right: 10),
+                        itemCount: newProductList[parentIndex].length,
+                        itemBuilder: (BuildContext context, int childIndex) {
+                          return Padding(padding: const EdgeInsets.only(top: 4, bottom: 4), child: ProductItem(product: newProductList[parentIndex][childIndex]));
+                        });
+                  },
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    mainAxisExtent: constraint.maxHeight - titleLayoutHeight,
+                    crossAxisCount: 3,
+                  ),
+                ),
+              ],
+            ),
+          );
         });
+      }
+    });
   }
 
   String getTitle(int index) {
@@ -236,7 +248,10 @@ class _ProductGridView extends StatelessWidget {
 }
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({Key? key, required this.product,}) : super(key: key);
+  const ProductItem({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
   final Product product;
 
   @override
@@ -285,5 +300,19 @@ class ProductItem extends StatelessWidget {
                 )));
       }),
     );
+  }
+}
+
+abstract class MainEvent {}
+
+class GetProductListEvent extends MainEvent {}
+
+class MainBloc extends Bloc<MainEvent, MainViewModel> {
+  MainBloc() : super(MainViewModel([], [])) {
+    on<GetProductListEvent>((event, emit) async {
+      await state.getAllProductList().then((value) {
+        emit(value);
+      });
+    });
   }
 }
