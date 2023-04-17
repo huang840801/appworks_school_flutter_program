@@ -1,13 +1,14 @@
+import 'package:appworks_school_flutter_program/detail_view_model.dart';
 import 'package:flutter/material.dart';
 
 import 'api/product_list_response.dart';
-import 'main.dart';
 
 class DetailScreen extends StatelessWidget {
-  const DetailScreen({super.key, required this.product});
+  DetailScreen({super.key, required this.product});
 
   final Product product;
   static String routeName = "/detail_screen";
+  final viewModel = DetailViewModel();
 
   static Route getRoute(Product product) {
     Route route = MaterialPageRoute(builder: (context) => DetailScreen(product: product));
@@ -16,6 +17,7 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    viewModel.getProductDetail(product.id.toString());
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -46,7 +48,7 @@ class DetailScreen extends StatelessWidget {
                         const SizedBox(height: 25),
                         SizedBox(width: 250, height: 300, child: Image.network(product.mainImage)),
                         const SizedBox(height: 10),
-                        Text(product.title!, style: const TextStyle(color: Colors.black, fontSize: 20)),
+                        Title(viewModel),
                         const Text('2023030101', style: TextStyle(color: Colors.black, fontSize: 16)),
                         const SizedBox(height: 20),
                         Text('NT ${product.price}', style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
@@ -134,9 +136,9 @@ class DetailScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Column(
+                        const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             SizedBox(height: 3),
                             Text('實品顏色依單品照為主', style: TextStyle(color: Colors.black, fontSize: 15)),
                             SizedBox(height: 3),
@@ -174,11 +176,9 @@ class DetailScreen extends StatelessWidget {
                             )
                           ],
                         ),
-                        const Text(
-                            'The Xunyang River sees off guests at night, and the maple leaves and grasses rustle in autumn.The master dismounts, and the guest is in the boat. He wants to drink without an orchestra.',
-                            style: TextStyle(color: Colors.black, fontSize: 12)),
-                        Column(
-                          children: const [
+                        const Text('The Xunyang River sees off guests at night, and the maple leaves and grasses rustle in autumn.The master dismounts, and the guest is in the boat. He wants to drink without an orchestra.', style: TextStyle(color: Colors.black, fontSize: 12)),
+                        const Column(
+                          children: [
                             SizedBox(height: 10),
                             Image(
                               fit: BoxFit.fill,
@@ -210,6 +210,27 @@ class DetailScreen extends StatelessWidget {
             ),
           )),
     );
+  }
+}
+
+class Title extends StatelessWidget {
+  const Title(
+    this.viewModel, {
+    Key? key,
+  }) : super(key: key);
+  final DetailViewModel viewModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+        valueListenable: viewModel.productDetailResponse,
+        builder: (context, productDetailResponse, child) {
+          if (productDetailResponse == null || productDetailResponse.title.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return Text(productDetailResponse.title, style: const TextStyle(color: Colors.black, fontSize: 20));
+          }
+        });
   }
 }
 
