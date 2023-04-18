@@ -261,7 +261,7 @@ class ProductItem extends StatelessWidget {
       child: Builder(builder: (context) {
         return GestureDetector(
             onTap: () {
-              Route route = DetailScreen.getRoute(product);
+              Route route = DetailScreen.getRoute(product.id.toString());
               Navigator.push(context, route);
             },
             child: OutlinedButton(
