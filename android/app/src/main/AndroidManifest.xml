@@ -4,6 +4,8 @@
         android:label="appworks_school_flutter_program"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyDHNrOuBYKNT7ooQx2zySN736LdtWPjXxk"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
