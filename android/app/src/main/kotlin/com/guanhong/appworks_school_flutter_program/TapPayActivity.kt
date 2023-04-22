@@ -1,24 +1,25 @@
 package com.guanhong.appworks_school_flutter_program
 
 import android.app.Activity
-import android.os.Bundle
-
+import android.content.Intent
 import android.graphics.Color
+import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import tech.cherri.tpdirect.api.TPDCard
 import tech.cherri.tpdirect.api.TPDServerType
 import tech.cherri.tpdirect.api.TPDSetup
-import tech.cherri.tpdirect.callback.TPDCardGetPrimeSuccessCallback
-import tech.cherri.tpdirect.callback.TPDGetPrimeFailureCallback
-import tech.cherri.tpdirect.callback.dto.TPDCardInfoDto
-import tech.cherri.tpdirect.callback.dto.TPDMerchantReferenceInfoDto
-import tech.cherri.tpdirect.model.TPDStatus
 
 class TapPayActivity : Activity() {
 
-    lateinit var tapPayCard: TPDCard
-    var isTapPayCanGetPrime = false
+    private lateinit var tapPayCard: TPDCard
+    private var isTapPayCanGetPrime = false
+
+    companion object {
+        const val GET_PRIME_SUCCESS = 1
+        const val MY_PRIME = "MY_PRIME"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +27,7 @@ class TapPayActivity : Activity() {
 
         val tpdForm = findViewById<tech.cherri.tpdirect.api.TPDForm>(R.id.tPDForm)
         val button = findViewById<Button>(R.id.button)
+        val statusTextView = findViewById<TextView>(R.id.status)
 
         button.setOnClickListener {
             Log.d("Huang", "getPrime")
@@ -42,33 +44,23 @@ class TapPayActivity : Activity() {
         tpdForm.setTextErrorColor(Color.RED)
         tpdForm.setOnFormUpdateListener { tpdStatus ->
 
-            if (tpdStatus.cardNumberStatus != TPDStatus.STATUS_OK ||
-                tpdStatus.expirationDateStatus != TPDStatus.STATUS_OK ||
-                tpdStatus.ccvStatus != TPDStatus.STATUS_OK
-            ) {
-            }
-            Log.d("Huang", " isCanGetPrime=" + tpdStatus.isCanGetPrime)
+            Log.d("Huang", " isCanGetPrime456=" + tpdStatus.isCanGetPrime)
             isTapPayCanGetPrime = tpdStatus.isCanGetPrime
         }
-        tapPayCard = TPDCard.setup(tpdForm).onSuccessCallback(object :
-            TPDCardGetPrimeSuccessCallback {
-            override fun onSuccess(
-                p0: String?,
-                p1: TPDCardInfoDto?,
-                p2: String?,
-                p3: TPDMerchantReferenceInfoDto?
-            ) {
-                Log.d("Huang", " success p0 = " + p0)
-                Log.d("Huang", " success p1 = " + p1)
-                Log.d("Huang", " success p2 = " + p2)
-                Log.d("Huang", " success p3 = " + p3)
-            }
+        tapPayCard = TPDCard.setup(tpdForm).onSuccessCallback { prime, cardInfo, cardIdentifier, merchantReferenceInfo ->
+            Log.d("Huang", " success prime=" + prime)
+            Log.d("Huang", " success cardInfo=" + cardInfo)
+            Log.d("Huang", " success cardIdentifier=" + cardIdentifier)
+            Log.d("Huang", " success merchantReferenceInfo=" + merchantReferenceInfo)
 
-        }).onFailureCallback(object : TPDGetPrimeFailureCallback {
-            override fun onFailure(p0: Int, p1: String?) {
-                Log.d("Huang", " fail p0 = " + p0)
-                Log.d("Huang", " fail p1 = " + p1)
-            }
-        })
+            setResult(GET_PRIME_SUCCESS, Intent().apply {
+                putExtra(MY_PRIME, prime)
+            })
+            finish()
+        }.onFailureCallback { status, reportMsg ->
+            Log.d("Huang", " fail status=" + status)
+            Log.d("Huang", " fail reportMsg=" + reportMsg)
+            statusTextView.text = reportMsg
+        }
     }
 }
