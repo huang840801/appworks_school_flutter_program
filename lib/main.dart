@@ -36,10 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-
     channel.setMethodCallHandler((call) async {
-      print("Huang flutter method " + call.method);
-      print("Huang flutter arguments " + call.arguments);
       prime = call.arguments;
       setState(() {});
     });

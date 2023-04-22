@@ -30,7 +30,6 @@ class TapPayActivity : Activity() {
         val statusTextView = findViewById<TextView>(R.id.status)
 
         button.setOnClickListener {
-            Log.d("Huang", "getPrime")
             tapPayCard.getPrime()
         }
 
@@ -43,23 +42,14 @@ class TapPayActivity : Activity() {
 
         tpdForm.setTextErrorColor(Color.RED)
         tpdForm.setOnFormUpdateListener { tpdStatus ->
-
-            Log.d("Huang", " isCanGetPrime456=" + tpdStatus.isCanGetPrime)
             isTapPayCanGetPrime = tpdStatus.isCanGetPrime
         }
         tapPayCard = TPDCard.setup(tpdForm).onSuccessCallback { prime, cardInfo, cardIdentifier, merchantReferenceInfo ->
-            Log.d("Huang", " success prime=" + prime)
-            Log.d("Huang", " success cardInfo=" + cardInfo)
-            Log.d("Huang", " success cardIdentifier=" + cardIdentifier)
-            Log.d("Huang", " success merchantReferenceInfo=" + merchantReferenceInfo)
-
             setResult(GET_PRIME_SUCCESS, Intent().apply {
                 putExtra(MY_PRIME, prime)
             })
             finish()
         }.onFailureCallback { status, reportMsg ->
-            Log.d("Huang", " fail status=" + status)
-            Log.d("Huang", " fail reportMsg=" + reportMsg)
             statusTextView.text = reportMsg
         }
     }

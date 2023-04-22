@@ -20,11 +20,6 @@ class MainActivity : FlutterActivity() {
 
         channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "MyChannel")
         channel.setMethodCallHandler { methodCall, result ->
-
-            print("Huang android method " + methodCall.method)
-            print("Huang android arguments " + methodCall.arguments)
-            print("Huang android result " + result)
-
             startActivityForResult(Intent(this, TapPayActivity::class.java), TO_TAP_PAY)
         }
     }
