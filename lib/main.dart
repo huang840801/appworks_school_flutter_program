@@ -1,6 +1,8 @@
 import 'package:appworks_school_flutter_program/js_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+export 'package:js/js.dart';
+export 'package:node_interop/util.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,13 +57,18 @@ class _MyHomePageState extends State<MyHomePage> {
             Container(
                 padding: const EdgeInsets.all(16),
                 child: Center(child: Text(prime, style: const TextStyle(fontSize: 20),))),
-            ElevatedButton(onPressed: () {
-              final fromJs = testJs('4242424242424242', '01', '24', '124');
-
-              print("Huang flutter=$fromJs");
+            ElevatedButton(onPressed: () async {
+              final prime = await getPrime();
+              this.prime = prime;
+              setState(() {});
             }, child: const Text('get prime', style: TextStyle(fontSize: 20),))
           ]),
     );
+  }
+
+  Future<String> getPrime() async {
+    final prime = await promiseToFuture(testJs('4242424242424242', '01', '24', '124'));
+    return prime;
   }
 
   Future<void> showMessage() async {
