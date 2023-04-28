@@ -1,3 +1,4 @@
+import 'package:appworks_school_flutter_program/js_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -51,13 +52,15 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-        Container(
-            padding: const EdgeInsets.all(16),
-            child: Center(child: Text(prime, style: const TextStyle(fontSize: 20),))),
-        ElevatedButton(onPressed:(){
-          showMessage();
-        }, child: const Text('TapPay', style: TextStyle(fontSize: 20),))
-      ]),
+            Container(
+                padding: const EdgeInsets.all(16),
+                child: Center(child: Text(prime, style: const TextStyle(fontSize: 20),))),
+            ElevatedButton(onPressed: () {
+              final fromJs = testJs('4242424242424242', '01', '24', '124');
+
+              print("Huang flutter=$fromJs");
+            }, child: const Text('get prime', style: TextStyle(fontSize: 20),))
+          ]),
     );
   }
 
@@ -65,3 +68,4 @@ class _MyHomePageState extends State<MyHomePage> {
     await channel.invokeMethod('To TapPay', 'Hello Android');
   }
 }
+

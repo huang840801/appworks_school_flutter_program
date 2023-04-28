@@ -7,9 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import tech.cherri.tpdirect.api.TPDCard
-import tech.cherri.tpdirect.api.TPDServerType
-import tech.cherri.tpdirect.api.TPDSetup
+import tech.cherri.tpdirect.api.*
 
 class TapPayActivity : Activity() {
 
@@ -24,6 +22,19 @@ class TapPayActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tap_pay)
+
+//        val cn = StringBuffer("cardNumber")
+//        val dm = StringBuffer("dueMonth")
+//        val dy = StringBuffer("dueYear")
+//        val cv = StringBuffer("ccv")
+//        val card = TPDCard(this, cn, dm, dy, cv).onSuccessCallback { tpPrime, _, _, _ ->
+//
+//            onSuccess(tpPrime)
+//        }.onFailureCallback { status, message ->
+//            onFailure(message)
+//        }
+//
+
 
         val tpdForm = findViewById<tech.cherri.tpdirect.api.TPDForm>(R.id.tPDForm)
         val button = findViewById<Button>(R.id.button)
