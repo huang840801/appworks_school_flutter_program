@@ -1,6 +1,6 @@
 import 'package:appworks_school_flutter_program/js_interface.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 export 'package:js/js.dart';
 export 'package:node_interop/util.dart';
 
@@ -33,17 +33,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final channel = const MethodChannel('MyChannel');
   String prime = 'MyPrime';
-
-  @override
-  void initState() {
-    super.initState();
-    channel.setMethodCallHandler((call) async {
-      prime = call.arguments;
-      setState(() {});
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,28 +41,30 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Container(
-                padding: const EdgeInsets.all(16),
-                child: Center(child: Text(prime, style: const TextStyle(fontSize: 20),))),
-            ElevatedButton(onPressed: () async {
+      body: Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+        Container(
+            padding: const EdgeInsets.all(16),
+            child: Center(
+                child: Text(
+              prime,
+              style: const TextStyle(fontSize: 20),
+            ))),
+        ElevatedButton(
+            onPressed: () async {
               final prime = await getPrime();
               this.prime = prime;
               setState(() {});
-            }, child: const Text('get prime', style: TextStyle(fontSize: 20),))
-          ]),
+            },
+            child: const Text(
+              'get prime',
+              style: TextStyle(fontSize: 20),
+            ))
+      ]),
     );
   }
 
   Future<String> getPrime() async {
-    final prime = await promiseToFuture(testJs('4242424242424242', '01', '24', '124'));
+    final prime = await promiseToFuture(testJs());
     return prime;
   }
-
-  Future<void> showMessage() async {
-    await channel.invokeMethod('To TapPay', 'Hello Android');
-  }
 }
-
