@@ -64,6 +64,10 @@ class _MapScreenState extends State<MapScreen> {
                 markerId: const MarkerId('Marker1'),
                 position: const LatLng(25.048472, 121.532385),
                 draggable: true,
+                infoWindow: const InfoWindow(
+                  title: 'Marker1',
+                  snippet: 'content1',
+                ),
                 onDragEnd: (value) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text("latitude=${value.latitude}, longitude=${value.longitude}"),
@@ -74,23 +78,43 @@ class _MapScreenState extends State<MapScreen> {
               const Marker(
                 markerId: MarkerId('Marker2'),
                 position: LatLng(25.047472, 121.332385),
+                infoWindow: InfoWindow(
+                  title: 'Marker2',
+                  snippet: 'content2',
+                ),
               ),
               const Marker(
                 markerId: MarkerId('Marker3'),
                 position: LatLng(25.047972, 121.432385),
+                infoWindow: InfoWindow(
+                  title: 'Marker3',
+                  snippet: 'content3',
+                ),
               ),
               const Marker(
                 markerId: MarkerId('Marker4'),
                 position: LatLng(24.907472, 121.502385),
+                infoWindow: InfoWindow(
+                  title: 'Marker4',
+                  snippet: 'content4',
+                ),
               ),
               const Marker(
                 markerId: MarkerId('Marker5'),
                 position: LatLng(25.056472, 121.722385),
+                infoWindow: InfoWindow(
+                  title: 'Marker5',
+                  snippet: 'content5',
+                ),
               ),
               const Marker(
                 markerId: MarkerId('Marker6'),
                 position: LatLng(25.037472, 121.632385),
-              ),
+                infoWindow: InfoWindow(
+                  title: 'Marker5',
+                  snippet: 'content5',
+                ),
+              )
             },
           ),
           Positioned(
